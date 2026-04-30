@@ -30,6 +30,9 @@ const elements = {
   lastUpdated: document.querySelector('#last-updated')
 };
 
+let nextAutoRefreshAt = null;
+let countdownIntervalId = null;
+
 init();
 
 function init() {
@@ -51,7 +54,11 @@ function init() {
       refreshPresence({ silent: true });
     }
   }, config.pollIntervalSeconds * 1000);
+
+  startCountdownTicker();
+  resetAutoRefreshCountdown();
 }
+
 
 async function submitPresence(event) {
   event.preventDefault();
@@ -87,8 +94,7 @@ async function refreshPresence(options = {}) {
         if (!issue) {
             renderPresence([]);
             setConnectionState('Verbunden', 'ok');
-            elements.lastUpdated.textContent =
-                `Zuletzt aktualisiert: ${new Date().toLocaleTimeString('de-DE')}`;
+            resetAutoRefreshCountdown();
             return;
         }
 
@@ -98,8 +104,7 @@ async function refreshPresence(options = {}) {
 
         renderPresence(currentPresence);
         setConnectionState('Verbunden', 'ok');
-        elements.lastUpdated.textContent =
-            `Zuletzt aktualisiert: ${new Date().toLocaleTimeString('de-DE')}`;
+        resetAutoRefreshCountdown();
     } catch (error) {
         setConnectionState('Fehler', 'error');
         if (!options.silent) {
@@ -189,6 +194,32 @@ function showError(message) {
 function hideError() {
   elements.errorBox.classList.add('hidden');
   elements.errorBox.textContent = '';
+}
+
+
+function startCountdownTicker() {
+  if (countdownIntervalId) {
+    return;
+  }
+
+  countdownIntervalId = window.setInterval(updateCountdownText, 1000);
+}
+
+function resetAutoRefreshCountdown() {
+  nextAutoRefreshAt = Date.now() + config.pollIntervalSeconds * 1000;
+  updateCountdownText();
+}
+
+function updateCountdownText() {
+  if (!nextAutoRefreshAt) {
+    elements.lastUpdated.textContent = '';
+    return;
+  }
+
+  const remainingSeconds = Math.max(0, Math.ceil((nextAutoRefreshAt - Date.now()) / 1000));
+  const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
+  const seconds = String(remainingSeconds % 60).padStart(2, '0');
+  elements.lastUpdated.textContent = `Nächste Aktualisierung in ${minutes}:${seconds}`;
 }
 
 function escapeHtml(value) {
