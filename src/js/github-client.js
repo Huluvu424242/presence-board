@@ -44,14 +44,21 @@ export class GitHubClient {
     });
   }
 
-  async ensureIssue(title) {
-    const existing = await this.findIssueByTitle(title);
-    if (existing) {
-      return existing;
+    async getIssue(title) {
+        return this.findIssueByTitle(title);
     }
 
-    return this.createIssue(title, 'Tages-Issue für Presence Board Events. Bitte nicht manuell bearbeiten.');
-  }
+    async ensureIssue(title) {
+        const existing = await this.findIssueByTitle(title);
+        if (existing) {
+            return existing;
+        }
+
+        return this.createIssue(
+            title,
+            'Tages-Issue für Presence Board Events. Bitte nicht manuell bearbeiten.'
+        );
+    }
 
   async listComments(issueNumber) {
     const comments = [];
@@ -80,4 +87,6 @@ export class GitHubClient {
       }
     );
   }
+
+
 }

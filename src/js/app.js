@@ -78,24 +78,34 @@ async function submitPresence(event) {
 }
 
 async function refreshPresence(options = {}) {
-  hideError();
+    hideError();
 
-  try {
-    const client = createClient();
-    const issue = await client.ensureIssue(todayIssueTitle(config));
-    const comments = await client.listComments(issue.number);
-    const events = extractEventsFromComments(comments);
-    const currentPresence = buildCurrentPresence(events, config.statusTtlMinutes);
+    try {
+        const client = createClient();
+        const issue = await client.getIssue(todayIssueTitle(config));
 
-    renderPresence(currentPresence);
-    setConnectionState('Verbunden', 'ok');
-    elements.lastUpdated.textContent = `Zuletzt aktualisiert: ${new Date().toLocaleTimeString('de-DE')}`;
-  } catch (error) {
-    setConnectionState('Fehler', 'error');
-    if (!options.silent) {
-      showError(error.message);
+        if (!issue) {
+            renderPresence([]);
+            setConnectionState('Verbunden', 'ok');
+            elements.lastUpdated.textContent =
+                `Zuletzt aktualisiert: ${new Date().toLocaleTimeString('de-DE')}`;
+            return;
+        }
+
+        const comments = await client.listComments(issue.number);
+        const events = extractEventsFromComments(comments);
+        const currentPresence = buildCurrentPresence(events, config.statusTtlMinutes);
+
+        renderPresence(currentPresence);
+        setConnectionState('Verbunden', 'ok');
+        elements.lastUpdated.textContent =
+            `Zuletzt aktualisiert: ${new Date().toLocaleTimeString('de-DE')}`;
+    } catch (error) {
+        setConnectionState('Fehler', 'error');
+        if (!options.silent) {
+            showError(error.message);
+        }
     }
-  }
 }
 
 function renderPresence(items) {
