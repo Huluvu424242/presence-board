@@ -78,7 +78,7 @@ async function submitPresence(event) {
     localStorage.setItem(storageKeys.room, presenceEvent.room);
 
     await client.createComment(issue.number, encodeEvent(presenceEvent));
-    await refreshPresence();
+    await refreshPresence({ preserveCountdown: true });
   } catch (error) {
     showError(error.message);
   }
@@ -94,7 +94,9 @@ async function refreshPresence(options = {}) {
         if (!issue) {
             renderPresence([]);
             setConnectionState('Verbunden', 'ok');
-            resetAutoRefreshCountdown();
+            if (!options.preserveCountdown) {
+                resetAutoRefreshCountdown();
+            }
             return;
         }
 
@@ -104,7 +106,9 @@ async function refreshPresence(options = {}) {
 
         renderPresence(currentPresence);
         setConnectionState('Verbunden', 'ok');
-        resetAutoRefreshCountdown();
+        if (!options.preserveCountdown) {
+            resetAutoRefreshCountdown();
+        }
     } catch (error) {
         setConnectionState('Fehler', 'error');
         if (!options.silent) {
