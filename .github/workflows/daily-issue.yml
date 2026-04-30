@@ -1,0 +1,52 @@
+name: Daily Presence Issue
+
+on:
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create today's issue and close old presence issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prefix = 'presence-';
+            const today = new Date().toISOString().slice(0, 10);
+            const todayTitle = `${prefix}${today}`;
+
+            const { owner, repo } = context.repo;
+
+            const openIssues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100
+            });
+
+            const todayIssue = openIssues.find(issue => issue.title === todayTitle);
+            if (!todayIssue) {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title: todayTitle,
+                body: 'Tages-Issue für Presence Board Events. Bitte nicht manuell bearbeiten.'
+              });
+            }
+
+            for (const issue of openIssues) {
+              if (issue.title.startsWith(prefix) && issue.title !== todayTitle) {
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  state: 'closed'
+                });
+              }
+            }
