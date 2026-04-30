@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Presence Board</title>
+  <link rel="stylesheet" href="src/css/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>Presence Board</h1>
+      <p>Freiwillige Team-Erreichbarkeit ohne eigene Datenbank.</p>
+    </div>
+    <button id="refresh-button" type="button">Aktualisieren</button>
+  </header>
+
+  <main class="layout">
+    <section class="card">
+      <h2>GitHub-Verbindung</h2>
+      <label>
+        GitHub Token
+        <input id="token-input" type="password" autocomplete="off" placeholder="Fine-grained PAT">
+      </label>
+      <div class="button-row">
+        <button id="save-token-button" type="button">Token lokal speichern</button>
+        <button id="clear-token-button" type="button" class="secondary">Token löschen</button>
+      </div>
+      <p class="hint">Der Token bleibt im localStorage dieses Browsers. Er wird nicht in GitHub gespeichert.</p>
+      <p id="connection-state" class="state neutral">Nicht verbunden</p>
+    </section>
+
+    <section class="card">
+      <h2>Eigenen Status setzen</h2>
+      <form id="presence-form">
+        <label>
+          Nutzerkürzel
+          <input id="user-input" type="text" required placeholder="z. B. tschubert">
+        </label>
+        <label>
+          Raum / Bereich
+          <input id="room-input" type="text" required placeholder="z. B. A-203 oder Teamzone Ost">
+        </label>
+        <label>
+          Status
+          <select id="status-input" required>
+            <option value="available">Ansprechbar</option>
+            <option value="busy">Nicht stören</option>
+            <option value="break">Pause</option>
+            <option value="meeting">Meeting</option>
+            <option value="focus">Fokusarbeit</option>
+            <option value="left">Nicht mehr vor Ort</option>
+          </select>
+        </label>
+        <label>
+          Hinweis
+          <input id="note-input" type="text" maxlength="120" placeholder="optional, z. B. Daily Business">
+        </label>
+        <button type="submit">Status veröffentlichen</button>
+      </form>
+    </section>
+
+    <section class="card wide">
+      <div class="section-title-row">
+        <h2>Aktueller Teamstatus</h2>
+        <span id="last-updated" class="hint"></span>
+      </div>
+      <div id="error-box" class="error-box hidden" role="alert"></div>
+      <table>
+        <thead>
+          <tr>
+            <th>Nutzer</th>
+            <th>Raum / Bereich</th>
+            <th>Status</th>
+            <th>Hinweis</th>
+            <th>Aktualisiert</th>
+          </tr>
+        </thead>
+        <tbody id="presence-table-body">
+          <tr><td colspan="5" class="empty">Noch keine Daten geladen.</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>Prototype. Keine Historienauswertung. Status läuft automatisch ab.</p>
+  </footer>
+
+  <script src="src/js/config.js"></script>
+  <script type="module" src="src/js/app.js"></script>
+</body>
+</html>
