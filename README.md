@@ -146,3 +146,21 @@ Nicht geeignet für:
 - Situationen, in denen Nutzer Rohdaten auf keinen Fall lesen dürfen
 
 Dann wäre eine vorgeschaltete Action/API-Schicht oder ein echter interner Dienst besser.
+
+## Qualität, Sicherheit, Barrierefreiheit und Compliance
+
+- **Clean Code & Dokumentation:** Architektur und Datenmodell sind in `README.md` und `docs/architecture.md` dokumentiert und auf den aktuellen Stand gebracht.
+- **Barrierefreiheit:** Die Statustabelle enthält eine unsichtbare Tabellenbeschreibung (`caption`) und der Countdown für die nächste Aktualisierung ist als `aria-live="polite"` markiert.
+- **Sicherheit:** Eingaben werden vor dem Rendern HTML-escaped, API-Aufrufe laufen über explizite GitHub Headers und Fehler werden sichtbar ausgewiesen.
+- **Lizenzkonformität:** Das Repository ist MIT-lizenziert. Es werden aktuell keine Drittanbieter-Runtime-Abhängigkeiten verwendet (`package.json` enthält keine `dependencies`).
+
+## Automatisierte Nightly Checks (GitHub Actions)
+
+Folgende Workflows laufen **nächtlich** und sind zusätzlich **manuell startbar** (`workflow_dispatch`):
+
+1. `.github/workflows/license-compliance.yml`
+   - prüft, ob der MIT-Lizenzheader in `LICENSE` vorhanden ist
+   - prüft, ob unerwartete Runtime-Abhängigkeiten in `package.json` deklariert sind
+2. `.github/workflows/security-baseline.yml`
+   - führt Secret Scanning via Gitleaks aus
+   - führt statische JavaScript-Sicherheitsanalyse via CodeQL aus

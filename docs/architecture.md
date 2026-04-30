@@ -115,3 +115,12 @@ GitHub Pages liest nur public-status.json
 ```
 
 Das ist datenschutztechnisch besser, aber aufwendiger.
+
+## Betriebsqualität und Governance
+
+Zur laufenden Absicherung der Qualität werden CI-Workflows verwendet:
+
+- `license-compliance.yml` (nightly + manuell): Lizenz- und Dependency-Policy.
+- `security-baseline.yml` (nightly + manuell): Secret Scanning (Gitleaks) und CodeQL Analyse.
+
+Damit werden grundlegende Sicherheits- und Compliance-Prüfungen regelmäßig automatisiert ausgeführt.
