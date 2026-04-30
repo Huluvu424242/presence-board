@@ -4,5 +4,5 @@ window.PRESENCE_CONFIG = {
   repo: 'presence-board',
   issueTitlePrefix: 'presence-',
   statusTtlMinutes: 540,
-  pollIntervalSeconds: 5
+  pollIntervalSeconds: 30
 };
