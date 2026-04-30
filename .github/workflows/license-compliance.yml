@@ -1,0 +1,45 @@
+name: License Compliance
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  license-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate repository license is MIT
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          license_text = Path('LICENSE').read_text(encoding='utf-8')
+          required = 'MIT License'
+          if required not in license_text:
+              raise SystemExit('LICENSE does not contain MIT License header')
+          print('MIT license header found.')
+          PY
+
+      - name: Verify no third-party runtime dependencies are used
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          package_json = Path('package.json')
+          if not package_json.exists():
+              print('No package.json found. Runtime dependency surface is empty.')
+              raise SystemExit(0)
+
+          data = json.loads(package_json.read_text(encoding='utf-8'))
+          deps = data.get('dependencies', {})
+          if deps:
+              raise SystemExit('Unexpected runtime dependencies found: ' + ', '.join(deps.keys()))
+          print('No runtime dependencies declared in package.json.')
+          PY

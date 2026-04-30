@@ -1,0 +1,10 @@
+{
+  "name": "presence-board",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static Presence Board app using GitHub Issues comments as event store",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {},
+  "devDependencies": {}
+}

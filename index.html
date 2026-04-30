@@ -63,10 +63,11 @@
     <section class="card wide">
       <div class="section-title-row">
         <h2>Aktueller Teamstatus</h2>
-        <span id="last-updated" class="hint"></span>
+        <span id="last-updated" class="hint" aria-live="polite"></span>
       </div>
       <div id="error-box" class="error-box hidden" role="alert"></div>
-      <table>
+      <table aria-describedby="last-updated">
+        <caption class="visually-hidden">Aktueller Teamstatus mit Nutzer, Raum, Status, Hinweis und Aktualisierungszeit</caption>
         <thead>
           <tr>
             <th>Nutzer</th>
