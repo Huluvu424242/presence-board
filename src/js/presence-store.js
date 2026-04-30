@@ -48,7 +48,7 @@ export function buildCurrentPresence(events, ttlMinutes) {
     }
 
     const existing = latestByUser.get(event.user);
-    if (!existing || Date.parse(existing.createdAt) < createdAtMillis) {
+    if (!existing || Date.parse(existing.createdAt) <= createdAtMillis) {
       latestByUser.set(event.user, event);
     }
   }
