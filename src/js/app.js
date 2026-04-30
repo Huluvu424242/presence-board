@@ -219,7 +219,8 @@ function updateCountdownText() {
   const remainingSeconds = Math.max(0, Math.ceil((nextAutoRefreshAt - Date.now()) / 1000));
   const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
   const seconds = String(remainingSeconds % 60).padStart(2, '0');
-  elements.lastUpdated.textContent = `Nächste Aktualisierung in ${minutes}:${seconds}`;
+  const urgentClass = remainingSeconds <= 10 ? ' countdown-urgent' : '';
+  elements.lastUpdated.innerHTML = `Nächste Aktualisierung in <span class="countdown${urgentClass}">${minutes}:${seconds}</span>`;
 }
 
 function escapeHtml(value) {

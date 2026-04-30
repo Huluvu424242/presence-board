@@ -162,3 +162,13 @@ td {
   .section-title-row { flex-direction: column; }
   table { display: block; overflow-x: auto; }
 }
+
+
+.countdown {
+  font-weight: 800;
+  color: var(--ok);
+}
+
+.countdown-urgent {
+  color: var(--error);
+}
